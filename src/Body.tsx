@@ -1,7 +1,8 @@
+import { GenerateWallet } from "./Components/GenerateWallet";
 export const BodyContent=()=>{
     return (
         <div>
-            asdas
+            <GenerateWallet />
         </div>
     )
 };
