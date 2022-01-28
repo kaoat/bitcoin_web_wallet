@@ -1,18 +1,61 @@
 //import * as BIP84 from "bip84";
 import * as BIP39 from "bip39";
 const BIP84 = require("bip84");
-class BitcoinWallet {
+class Bitcoin {
   public readonly languages: string[];
+  public readonly words: { length: number; bit: number }[];
 
   constructor() {
     this.languages = [];
     for (let language in BIP39.wordlists) {
       this.languages.push(language);
     }
+    this.words = [
+      {
+        length: 12,
+        bit: 128,
+      },
+      {
+        length: 15,
+        bit: 160,
+      },
+      {
+        length: 18,
+        bit: 192,
+      },
+      {
+        length: 21,
+        bit: 224,
+      },
+      {
+        length: 24,
+        bit: 256,
+      },
+    ];
   }
 
   public generateMnemonic(bitlength: number) {
-    return BIP39.generateMnemonic(bitlength);
+    let mnemonics = [];
+    for (let language of this.languages) {
+      BIP39.setDefaultWordlist(language);
+      mnemonics.push({
+        language: language,
+        value: BIP39.generateMnemonic(bitlength),
+      });
+    }
+    return mnemonics;
+  }
+
+  public mnemonicToEntropy(mnemonic: string) {
+    return BIP39.mnemonicToEntropy(mnemonic);
+  }
+  public mnemonicToSeed(mnemonic: string, passPhrase: string) {
+    passPhrase = passPhrase || "";
+    return BIP39.mnemonicToSeedSync(mnemonic, passPhrase);
+  }
+
+  public validateMnemonic(mnemonic: string) {
+    return BIP39.validateMnemonic(mnemonic);
   }
 
   public getMasterPrivateKey(
@@ -90,5 +133,5 @@ class BitcoinWallet {
     return privateKeys;
   }
 }
-const bitcoinWallet: BitcoinWallet = new BitcoinWallet();
-export default bitcoinWallet;
+const bitcoin: Bitcoin = new Bitcoin();
+export default bitcoin;

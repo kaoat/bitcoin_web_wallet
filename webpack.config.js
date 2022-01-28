@@ -3,10 +3,13 @@ const HtmlWebpackPlugin=require("html-webpack-plugin");
 const webpack=require("webpack");
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: {
+    bundle:'./src/index.tsx',
+    worker:"./src/Workers/Bitcoin.worker.ts"
+  },
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'index.bundle.js',
+    filename: 'index.[name].js',
   },
   resolve:{
       modules:[
@@ -33,6 +36,14 @@ module.exports = {
               ]
           },
           {
+            test: /\.worker\.ts$/,
+            use: [
+              {
+                loader:"worker-loader"
+              }
+            ],
+          },
+          {
             test:/\.(ts|tsx)$/,
             exclude:/node_modules/,
             use:[
@@ -52,7 +63,7 @@ module.exports = {
               use:[
                   "file-loader"
               ]
-          }
+          },
       ]
   },
   devServer: {
