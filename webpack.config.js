@@ -7,7 +7,7 @@ module.exports = {
     bundle:'./src/index.tsx'
   },
   output: {
-    path: path.join(__dirname, 'build'),
+    path: path.join(__dirname, 'public'),
     filename: 'index.[name].js',
   },
   resolve:{
