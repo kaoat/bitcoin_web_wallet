@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ReactDOM } from "react";
 import { SingleWallet } from "./SingleWallet";
+import { MultisigWallet } from "./MultiWallet";
 
 export const GenerateWallet=()=>{
     const [walletMode,setWalletMode]=useState("single");
@@ -17,7 +18,7 @@ export const GenerateWallet=()=>{
             setWalletMode("multi");
           }}>Multisig</button>
         </div>
-        {walletMode=="single"?<SingleWallet />:undefined}
+        {walletMode=="single"?<SingleWallet />:<MultisigWallet />}
       </div>
     );
 };
