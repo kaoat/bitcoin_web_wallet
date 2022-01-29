@@ -4,8 +4,7 @@ const webpack=require("webpack");
 
 module.exports = {
   entry: {
-    bundle:'./src/index.tsx',
-    worker:"./src/Workers/Bitcoin.worker.ts"
+    bundle:'./src/index.tsx'
   },
   output: {
     path: path.join(__dirname, 'build'),

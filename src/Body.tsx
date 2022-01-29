@@ -15,7 +15,7 @@ const MODE=[
 export const BodyContent=()=>{
     const [mode,setMode]=useState(MODE[0]);
     return (
-        <div className="container mx-auto mt-4">
+        <div className="container mx-auto px-8">
             {mode.component}
         </div>
     )

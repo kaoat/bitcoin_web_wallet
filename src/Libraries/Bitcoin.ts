@@ -1,5 +1,6 @@
 //import * as BIP84 from "bip84";
 import * as BIP39 from "bip39";
+import { address } from "bitcoinjs-lib";
 const BIP84 = require("bip84");
 class Bitcoin {
   public readonly languages: string[];
@@ -39,8 +40,19 @@ class Bitcoin {
     for (let language of this.languages) {
       BIP39.setDefaultWordlist(language);
       mnemonics.push({
-        language: language,
+        language,
         value: BIP39.generateMnemonic(bitlength),
+      });
+    }
+    return mnemonics;
+  }
+  public entropyToMnemonic(entropy: string) {
+    let mnemonics = [];
+    for (let language of this.languages) {
+      BIP39.setDefaultWordlist(language);
+      mnemonics.push({
+        language,
+        value: BIP39.entropyToMnemonic(entropy),
       });
     }
     return mnemonics;
@@ -80,57 +92,35 @@ class Bitcoin {
   public getAccountMasterPublicKey(zprv: string) {
     return new BIP84.fromZPrv(zprv).getAccountPublicKey();
   }
-  public generateSegwitSingleSigAddresses(
+  public generateSegwitWallet(
     zprivOrZPub: string,
     startIndex: number,
     endIndex: number,
-    purpose?: number
+    accountIndex: number
   ) {
-    purpose = purpose || 84;
-    let addresses = [];
+    let purpose = 84;
+    let wallet = [];
     if (zprivOrZPub.startsWith("zprv")) {
+      let zprv = new BIP84.fromZPrv(zprivOrZPub);
       for (let i = startIndex; i < endIndex; i++) {
-        addresses.push(
-          new BIP84.fromZPrv(zprivOrZPub).getAddress(i, false, purpose)
-        );
+        wallet.push({
+          address: zprv.getAddress(i, false, purpose),
+          path: `m/${purpose}'/0/${accountIndex}'/0/${i}`,
+          privateKey: zprv.getPrivateKey(i, false, purpose),
+          publicKey: zprv.getPublicKey(i, false, purpose),
+        });
       }
     } else {
+      let zpub = new BIP84.fromZPub(zprivOrZPub);
       for (let i = startIndex; i < endIndex; i++) {
-        addresses.push(
-          new BIP84.fromZPub(zprivOrZPub).getAddress(i, false, purpose)
-        );
+        wallet.push({
+          address: zpub.getAddress(i, false, purpose),
+          path: `m/${purpose}'/0/${accountIndex}'/0/${i}`,
+          publicKey: zpub.getPublicKey(i, false, purpose),
+        });
       }
     }
-    return addresses;
-  }
-  public generateSegwitSingleSigPublicKeys(
-    zprivOrZPub: string,
-    startIndex: number,
-    endIndex: number
-  ) {
-    let publicKeys = [];
-    if (zprivOrZPub.startsWith("zprv")) {
-      for (let i = startIndex; i < endIndex; i++) {
-        publicKeys.push(new BIP84.fromZPrv(zprivOrZPub).getPublicKey(i, false));
-      }
-    } else {
-      for (let i = startIndex; i < endIndex; i++) {
-        publicKeys.push(new BIP84.fromZPub(zprivOrZPub).getPublicKey(i, false));
-      }
-    }
-    return publicKeys;
-  }
-
-  public generateSegwitSingleSigPrivateKeys(
-    zpriv: string,
-    startIndex: number,
-    endIndex: number
-  ) {
-    let privateKeys = [];
-    for (let i = startIndex; i < endIndex; i++) {
-      privateKeys.push(new BIP84.fromZPrv(zpriv).getPrivateKey(i, false));
-    }
-    return privateKeys;
+    return wallet;
   }
 }
 const bitcoin: Bitcoin = new Bitcoin();

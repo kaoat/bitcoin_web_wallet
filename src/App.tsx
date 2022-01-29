@@ -8,10 +8,11 @@ export const App=()=>{
         <div style={{
             display:"flex",
             flexDirection:"column",
-            rowGap:"10"
+            rowGap:"15px"
         }}>
             <NavigationBar />
             <BodyContent />
+            <FooterBar />
         </div>
     )
 };

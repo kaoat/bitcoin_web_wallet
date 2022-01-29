@@ -1,6 +1,6 @@
 export const NavigationBar=()=>{
     return (
-        <nav className="flex items-center justify-between flex-wrap bg-yellow-400 p-6">
+        <nav className="flex top-0 w-full items-center justify-between flex-wrap bg-yellow-400 p-6">
   <div className="flex items-center flex-shrink-0 text-white mr-6">
     <img src="./assets/svg/bitcoin-btc-logo.svg" alt="bitcoin logo" className="fill-current h-8 w-8 mr-2" />
     <span className="font-semibold text-xl tracking-tight hover:text-black" style={{
